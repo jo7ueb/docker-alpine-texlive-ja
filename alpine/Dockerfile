@@ -1,11 +1,12 @@
-FROM alpine:3.15.0 AS installer
+FROM alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978 AS installer
 ENV PATH /usr/local/bin/texlive:$PATH
 WORKDIR /install-tl-unx
 RUN apk add --no-cache \
   perl \
   tar \
   wget \
-  xz
+  xz \
+  fontconfig
 COPY ./texlive.profile ./
 RUN wget -nv https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 RUN tar -xzf ./install-tl-unx.tar.gz --strip-components=1
@@ -17,7 +18,7 @@ RUN tlmgr install \
   collection-latexextra \
   latexmk
 
-FROM alpine:3.15.0
+FROM alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
 ENV PATH /usr/local/bin/texlive:$PATH
 WORKDIR /workdir
 COPY --from=installer /usr/local/texlive /usr/local/texlive
